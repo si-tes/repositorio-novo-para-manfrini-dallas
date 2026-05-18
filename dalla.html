@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dallas Imports | O Manto Sagrado</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #fafafa; overflow-x: hidden; }
+        .italic-black { font-style: italic; font-weight: 900; }
+        .tracking-tighter { letter-spacing: -0.05em; }
+        .glass { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(12px); }
+        .page { display: none; }
+        .page.active { display: block; animation: fadeIn 0.5s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .hero-gradient { background: linear-gradient(to top, rgba(0,0,0,0.8), transparent); }
+        .scrollbar-hide::-webkit-scrollbar { display: none; }
+        .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+        .btn-hover { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .btn-hover:hover { transform: scale(1.05); }
+        .btn-hover:active { transform: scale(0.95); }
+    </style>
+</head>
+<body>
+
+    <!-- HEADER -->
+    <header class="fixed top-0 left-0 right-0 z-50 glass border-b border-black/5">
+        <div class="container mx-auto px-4 md:px-8 h-16 md:h-20 flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <button class="md:hidden p-2 hover:bg-black/5 rounded-full"><i data-lucide="menu"></i></button>
+                <div onclick="showPage('home')" class="cursor-pointer">
+                    <h1 class="text-xl md:text-2xl italic-black tracking-tighter uppercase">
+                        Dallas<span class="text-red-600">.</span>
+                    </h1>
+                </div>
+            </div>
+            <nav class="hidden md:flex items-center gap-8">
+                <a href="#" class="text-sm font-black uppercase tracking-widest hover:text-red-600 transition-colors italic">Lançamentos</a>
+                <a href="#" class="text-sm font-black uppercase tracking-widest hover:text-red-600 transition-colors italic">Brasil</a>
+                <a href="#" class="text-sm font-black uppercase tracking-widest hover:text-red-600 transition-colors italic">Europeus</a>
+                <a href="#" class="text-sm font-black uppercase tracking-widest hover:text-red-600 transition-colors italic">Retrô</a>
+            </nav>
+            <div class="flex items-center gap-2 md:gap-4">
+                <button class="p-2 hover:bg-black/5 rounded-full"><i data-lucide="search" size="20"></i></button>
+                <button class="p-2 hover:bg-black/5 rounded-full"><i data-lucide="user" size="20"></i></button>
+                <button class="p-2 hover:bg-black/5 rounded-full relative">
+                    <i data-lucide="shopping-bag" size="20"></i>
+                    <span class="absolute -top-1 -right-1 bg-red-600 text-white text-[10px] rounded-full w-4 h-4 flex items-center justify-center font-bold">0</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- PAGE: HOME -->
+    <section id="home" class="page active pt-20 md:pt-24">
+        <!-- HERO -->
+        <div class="mx-4 md:mx-8 relative h-[60vh] md:h-[80vh] rounded-[2rem] md:rounded-[3rem] overflow-hidden group">
+            <img src="https://images.unsplash.com/photo-1551479460-5e76c686816a?w=1600&q=80" class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" alt="Hero">
+            <div class="absolute inset-0 hero-gradient"></div>
+            <div class="absolute inset-0 flex flex-col justify-end p-8 md:p-16 text-white">
+                <div class="max-w-2xl">
+                    <span class="inline-block bg-red-600 px-3 py-1 text-[10px] font-black uppercase tracking-widest italic mb-4">Coleção Retrô 2026</span>
+                    <h2 class="text-5xl md:text-8xl italic-black tracking-tighter uppercase leading-none mb-6">
+                        Relíquias do <br><span class="text-red-600">Futebol</span>
+                    </h2>
+                    <p class="text-lg md:text-xl text-white/80 mb-8 max-w-lg font-medium">Vista a história. Camisas lendárias que transcendem o tempo, com qualidade impecável.</p>
+                    <div class="flex gap-4">
+                        <button class="bg-white text-black px-8 py-4 rounded-full italic-black uppercase tracking-wider text-sm btn-hover shadow-xl">Explorar Coleção</button>
+                        <button class="bg-transparent border-2 border-white/30 backdrop-blur-md px-8 py-4 rounded-full italic-black uppercase tracking-wider text-sm btn-hover">Novidades</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- BENEFITS -->
+        <div class="container mx-auto px-4 md:px-8 py-16 grid grid-cols-2 md:grid-cols-4 gap-6">
+            <div class="flex flex-col items-center text-center p-6 bg-white rounded-3xl border border-black/5 shadow-sm">
+                <div class="text-red-600 mb-3"><i data-lucide="truck" size="32"></i></div>
+                <h4 class="italic-black uppercase tracking-tighter text-sm">Frete Grátis</h4>
+                <p class="text-[10px] text-black/40 font-bold uppercase">Acima de R$ 299</p>
+            </div>
+            <div class="flex flex-col items-center text-center p-6 bg-white rounded-3xl border border-black/5 shadow-sm">
+                <div class="text-red-600 mb-3"><i data-lucide="shield-check" size="32"></i></div>
+                <h4 class="italic-black uppercase tracking-tighter text-sm">Segurança</h4>
+                <p class="text-[10px] text-black/40 font-bold uppercase">Pagamento 100% Protegido</p>
+            </div>
+            <div class="flex flex-col items-center text-center p-6 bg-white rounded-3xl border border-black/5 shadow-sm">
+                <div class="text-red-600 mb-3"><i data-lucide="credit-card" size="32"></i></div>
+                <h4 class="italic-black uppercase tracking-tighter text-sm">Até 12x</h4>
+                <p class="text-[10px] text-black/40 font-bold uppercase">Sem Juros no Cartão</p>
+            </div>
+            <div class="flex flex-col items-center text-center p-6 bg-white rounded-3xl border border-black/5 shadow-sm">
+                <div class="text-red-600 mb-3"><i data-lucide="rotate-ccw" size="32"></i></div>
+                <h4 class="italic-black uppercase tracking-tighter text-sm">Troca Fácil</h4>
+                <p class="text-[10px] text-black/40 font-bold uppercase">30 Dias Garantidos</p>
+            </div>
+        </div>
+
+        <!-- PRODUCTS -->
+        <div class="container mx-auto px-4 md:px-8 py-8">
+            <div class="flex items-end justify-between mb-10">
+                <div>
+                    <div class="w-12 h-1 bg-red-600 mb-4"></div>
+                    <h2 class="text-3xl md:text-5xl italic-black tracking-tighter uppercase">Mais Vendidas</h2>
+                </div>
+                <div class="flex gap-2">
+                    <button class="p-3 border-2 border-black/10 rounded-full hover:bg-black hover:text-white transition-all"><i data-lucide="arrow-left"></i></button>
+                    <button class="p-3 border-2 border-black/10 rounded-full hover:bg-black hover:text-white transition-all"><i data-lucide="arrow-right"></i></button>
+                </div>
+            </div>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                <!-- PRODUCT 1 -->
+                <div onclick="showProduct('1')" class="group cursor-pointer">
+                    <div class="aspect-[3/4] rounded-3xl overflow-hidden bg-gray-100 relative mb-4">
+                        <img src="https://images.unsplash.com/photo-1551479460-5e76c686816a?w=600" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+                        <div class="absolute top-4 right-4 translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500">
+                            <button class="bg-white text-black p-3 rounded-full shadow-lg hover:bg-red-600 hover:text-white transition-colors"><i data-lucide="shopping-bag" size="20"></i></button>
+                        </div>
+                    </div>
+                    <p class="text-[10px] text-red-600 font-black uppercase italic tracking-widest mb-1">Seleção Brasileira</p>
+                    <h3 class="italic-black uppercase tracking-tight mb-2 truncate">Brasil Retrô 1970 - Pelé</h3>
+                    <div class="flex justify-between items-center">
+                        <span class="text-xl italic-black text-red-600">R$ 349,90</span>
+                        <span class="text-[10px] font-bold text-black/20 uppercase">12x s/ juros</span>
+                    </div>
+                </div>
+                <!-- PRODUCT 2 -->
+                <div onclick="showProduct('2')" class="group cursor-pointer">
+                    <div class="aspect-[3/4] rounded-3xl overflow-hidden bg-gray-100 relative mb-4">
+                        <img src="https://images.unsplash.com/photo-1579952363873-27f3bade9f55?w=600" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+                    </div>
+                    <p class="text-[10px] text-red-600 font-black uppercase italic tracking-widest mb-1">Argentina</p>
+                    <h3 class="italic-black uppercase tracking-tight mb-2 truncate">Argentina 1986 - Maradona</h3>
+                    <span class="text-xl italic-black text-red-600">R$ 399,90</span>
+                </div>
+                <!-- PRODUCT 3 -->
+                <div onclick="showProduct('3')" class="group cursor-pointer">
+                    <div class="aspect-[3/4] rounded-3xl overflow-hidden bg-gray-100 relative mb-4">
+                        <img src="https://images.unsplash.com/photo-1560272564-c83b66b1ad12?w=600" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+                    </div>
+                    <p class="text-[10px] text-red-600 font-black uppercase italic tracking-widest mb-1">França</p>
+                    <h3 class="italic-black uppercase tracking-tight mb-2 truncate">França 1998 - Zidane</h3>
+                    <span class="text-xl italic-black text-red-600">R$ 389,90</span>
+                </div>
+                <!-- PRODUCT 4 -->
+                <div onclick="showProduct('4')" class="group cursor-pointer">
+                    <div class="aspect-[3/4] rounded-3xl overflow-hidden bg-gray-100 relative mb-4">
+                        <img src="https://images.unsplash.com/photo-1614632537197-38a17061c2bd?w=600" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+                    </div>
+                    <p class="text-[10px] text-red-600 font-black uppercase italic tracking-widest mb-1">Itália</p>
+                    <h3 class="italic-black uppercase tracking-tight mb-2 truncate">Itália 2006 - Azzurri</h3>
+                    <span class="text-xl italic-black text-red-600">R$ 359,90</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PAGE: PRODUCT DETAIL -->
+    <section id="product" class="page pt-24 md:pt-32">
+        <div class="container mx-auto px-4 md:px-8">
+            <button onclick="showPage('home')" class="flex items-center gap-2 mb-8 italic-black uppercase text-xs tracking-widest hover:text-red-600 transition-colors">
+                <i data-lucide="arrow-left" size="16"></i> Voltar para Loja
+            </button>
+            <div class="flex flex-col md:flex-row gap-12">
+                <div class="w-full md:w-1/2">
+                    <div class="aspect-[4/5] rounded-[2rem] overflow-hidden bg-gray-100 shadow-2xl">
+                        <img id="detail-img" src="https://images.unsplash.com/photo-1551479460-5e76c686816a?w=1000" class="w-full h-full object-cover">
+                    </div>
+                </div>
+                <div class="w-full md:w-1/2 space-y-8">
+                    <div>
+                        <span class="bg-red-600 text-white text-[10px] font-black uppercase tracking-widest px-3 py-1 italic mb-4 inline-block">Manto Sagrado</span>
+                        <h2 id="detail-name" class="text-4xl md:text-7xl italic-black tracking-tighter uppercase leading-none mb-4">Brasil Retrô 1970</h2>
+                        <p class="text-4xl font-black text-red-600 italic">R$ 349,90</p>
+                    </div>
+                    <p class="text-black/60 leading-relaxed font-medium">A lendária camisa amarela do tricampeonato mundial. Confeccionada em algodão premium com o escudo bordado em alta definição. Uma peça indispensável para colecionadores.</p>
+                    
+                    <div class="space-y-4">
+                        <h3 class="italic-black uppercase text-lg tracking-tighter">Selecione o Tamanho</h3>
+                        <div class="flex gap-3">
+                            <button class="w-14 h-14 rounded-xl border-2 border-black italic-black flex items-center justify-center bg-black text-white shadow-lg">P</button>
+                            <button class="w-14 h-14 rounded-xl border-2 border-black/10 italic-black flex items-center justify-center hover:border-black">M</button>
+                            <button class="w-14 h-14 rounded-xl border-2 border-black/10 italic-black flex items-center justify-center hover:border-black">G</button>
+                            <button class="w-14 h-14 rounded-xl border-2 border-black/10 italic-black flex items-center justify-center hover:border-black">GG</button>
+                        </div>
+                    </div>
+
+                    <button onclick="showPage('checkout')" class="w-full bg-red-600 text-white py-6 rounded-full italic-black text-xl uppercase tracking-wider btn-hover shadow-2xl flex items-center justify-center gap-3">
+                        <i data-lucide="shopping-bag"></i> Comprar Agora
+                    </button>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="p-4 bg-white rounded-2xl border border-black/5 flex items-center gap-3">
+                            <i data-lucide="truck" class="text-red-600"></i>
+                            <span class="text-[10px] font-black uppercase italic">Frete Grátis</span>
+                        </div>
+                        <div class="p-4 bg-white rounded-2xl border border-black/5 flex items-center gap-3">
+                            <i data-lucide="shield-check" class="text-red-600"></i>
+                            <span class="text-[10px] font-black uppercase italic">Garantia</span>
+                        </div>
+                        <div class="p-4 bg-white rounded-2xl border border-black/5 flex items-center gap-3">
+                            <i data-lucide="credit-card" class="text-red-600"></i>
+                            <span class="text-[10px] font-black uppercase italic">12x s/ Juros</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PAGE: CHECKOUT -->
+    <section id="checkout" class="page pt-24 md:pt-32">
+        <div class="max-w-6xl mx-auto px-4 md:px-8">
+            <div class="flex flex-col lg:flex-row gap-12">
+                <div class="flex-1 space-y-8">
+                    <div class="bg-white rounded-[2rem] p-8 border border-black/5 shadow-sm space-y-6">
+                        <h2 class="text-3xl italic-black uppercase tracking-tighter">Entrega e Pagamento</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <input type="text" class="w-full bg-gray-100 rounded-xl px-4 py-4 font-bold outline-none" placeholder="Nome Completo">
+                            <input type="email" class="w-full bg-gray-100 rounded-xl px-4 py-4 font-bold outline-none" placeholder="E-mail">
+                            <input type="text" class="w-full bg-gray-100 rounded-xl px-4 py-4 font-bold outline-none" placeholder="CEP">
+                            <input type="text" class="w-full bg-gray-100 rounded-xl px-4 py-4 font-bold outline-none" placeholder="WhatsApp">
+                        </div>
+                        <div class="h-px bg-black/5"></div>
+                        <div class="grid grid-cols-3 gap-4">
+                            <button onclick="setPay('pix')" id="pay-pix" class="p-6 rounded-2xl border-2 border-red-600 bg-red-50 text-red-600 flex flex-col items-center gap-2 italic-black uppercase text-[10px]">
+                                <i data-lucide="qr-code"></i> PIX
+                            </button>
+                            <button onclick="setPay('card')" id="pay-card" class="p-6 rounded-2xl border-2 border-black/5 text-black/20 flex flex-col items-center gap-2 italic-black uppercase text-[10px]">
+                                <i data-lucide="credit-card"></i> Cartão
+                            </button>
+                            <button onclick="setPay('boleto')" id="pay-boleto" class="p-6 rounded-2xl border-2 border-black/5 text-black/20 flex flex-col items-center gap-2 italic-black uppercase text-[10px]">
+                                <i data-lucide="file-text"></i> Boleto
+                            </button>
+                        </div>
+                        <button onclick="showPage('success')" class="w-full bg-red-600 text-white py-6 rounded-full italic-black text-xl uppercase tracking-wider btn-hover shadow-2xl">Finalizar Pedido</button>
+                    </div>
+                </div>
+                <div class="w-full lg:w-96">
+                    <div class="bg-white rounded-[2rem] p-8 border border-black/5 shadow-sm sticky top-32 space-y-6">
+                        <h3 class="italic-black uppercase text-xl">Seu Pedido</h3>
+                        <div class="flex gap-4">
+                            <img src="https://images.unsplash.com/photo-1551479460-5e76c686816a?w=200" class="w-20 h-20 object-cover rounded-xl bg-gray-100">
+                            <div>
+                                <p class="text-xs italic-black uppercase text-red-600">Brasil Retrô 1970</p>
+                                <p class="font-bold text-sm">Tamanho: P</p>
+                                <p class="italic-black">R$ 349,90</p>
+                            </div>
+                        </div>
+                        <div class="h-px bg-black/5"></div>
+                        <div class="flex justify-between items-center italic-black text-2xl">
+                            <span>Total</span>
+                            <span class="text-red-600">R$ 349,90</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PAGE: SUCCESS -->
+    <section id="success" class="page pt-40 pb-20">
+        <div class="max-w-md mx-auto text-center px-4">
+            <div class="w-24 h-24 bg-red-600 rounded-full flex items-center justify-center mx-auto mb-8 shadow-2xl">
+                <i data-lucide="check" size="48" class="text-white"></i>
+            </div>
+            <h2 class="text-5xl italic-black uppercase tracking-tighter mb-4 leading-none">Pedido <br><span class="text-red-600">Confirmado!</span></h2>
+            <p class="text-black/60 font-medium mb-12">Você receberá todos os detalhes no seu e-mail. Obrigado por escolher a Dallas!</p>
+            <button onclick="showPage('home')" class="w-full bg-black text-white py-6 rounded-full italic-black text-xl uppercase tracking-wider btn-hover shadow-2xl">Voltar para a Loja</button>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="mt-20 bg-black text-white py-20 px-8 rounded-t-[3rem] md:rounded-t-[5rem]">
+        <div class="container mx-auto grid grid-cols-1 md:grid-cols-4 gap-12">
+            <div class="col-span-1 md:col-span-2">
+                <h2 class="text-4xl italic-black uppercase tracking-tighter mb-6 italic">Dallas<span class="text-red-600">.</span> Imports</h2>
+                <p class="text-white/40 max-w-sm font-medium">Especialistas em mantos sagrados. Trazemos a história do futebol mundial para você com qualidade premium.</p>
+            </div>
+            <div>
+                <h4 class="italic-black uppercase mb-6 tracking-widest text-sm text-red-600">Links</h4>
+                <ul class="space-y-3 text-white/30 font-bold uppercase text-[10px]">
+                    <li class="hover:text-white cursor-pointer">Início</li>
+                    <li class="hover:text-white cursor-pointer">Coleções</li>
+                    <li class="hover:text-white cursor-pointer">Rastreio</li>
+                    <li class="hover:text-white cursor-pointer">Contato</li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="italic-black uppercase mb-6 tracking-widest text-sm text-red-600">Social</h4>
+                <ul class="space-y-3 text-white/30 font-bold uppercase text-[10px]">
+                    <li class="hover:text-white cursor-pointer">Instagram</li>
+                    <li class="hover:text-white cursor-pointer">WhatsApp</li>
+                </ul>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // INIT LUCIDE ICONS
+        lucide.createIcons();
+
+        // NAVIGATION LOGIC
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
+            window.scrollTo(0, 0);
+        }
+
+        // PRODUCT SELECT LOGIC
+        function showProduct(id) {
+            // Mock data update for presentation
+            const names = {
+                '1': 'Brasil Retrô 1970 - Pelé',
+                '2': 'Argentina 1986 - Maradona',
+                '3': 'França 1998 - Zidane',
+                '4': 'Itália 2006 - Azzurri'
+            };
+            const imgs = {
+                '1': 'https://images.unsplash.com/photo-1551479460-5e76c686816a?w=1000',
+                '2': 'https://images.unsplash.com/photo-1579952363873-27f3bade9f55?w=1000',
+                '3': 'https://images.unsplash.com/photo-1560272564-c83b66b1ad12?w=1000',
+                '4': 'https://images.unsplash.com/photo-1614632537197-38a17061c2bd?w=1000'
+            };
+            document.getElementById('detail-name').innerText = names[id];
+            document.getElementById('detail-img').src = imgs[id];
+            showPage('product');
+        }
+
+        // PAYMENT TOGGLE LOGIC
+        function setPay(method) {
+            const btns = ['pix', 'card', 'boleto'];
+            btns.forEach(m => {
+                const b = document.getElementById('pay-' + m);
+                b.classList.remove('border-red-600', 'bg-red-50', 'text-red-600');
+                b.classList.add('border-black/5', 'text-black/20');
+            });
+            const active = document.getElementById('pay-' + method);
+            active.classList.add('border-red-600', 'bg-red-50', 'text-red-600');
+            active.classList.remove('border-black/5', 'text-black/20');
+        }
+    </script>
+</body>
+</html>
