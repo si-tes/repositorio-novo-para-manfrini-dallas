@@ -1,346 +1,946 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dallas Imports | O Manto Sagrado</title>
+    <meta name="referrer" content="no-referrer">
+    <title>Dalla Imports | O Manto Sagrado</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #fafafa; overflow-x: hidden; }
-        .italic-black { font-style: italic; font-weight: 900; }
-        .tracking-tighter { letter-spacing: -0.05em; }
-        .glass { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(12px); }
-        .page { display: none; }
-        .page.active { display: block; animation: fadeIn 0.5s ease-out; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        .hero-gradient { background: linear-gradient(to top, rgba(0,0,0,0.8), transparent); }
-        .scrollbar-hide::-webkit-scrollbar { display: none; }
-        .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
-        .btn-hover { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-        .btn-hover:hover { transform: scale(1.05); }
-        .btn-hover:active { transform: scale(0.95); }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #ffffff;
+            color: #000;
+            overflow-x: hidden;
+        }
+
+        /* Utilitários Clean */
+        .glass {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(8px);
+        }
+
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        /* Transições de Página */
+        .page {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .page.active {
+            display: block;
+            opacity: 1;
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Produto Adidas Style */
+        .product-card {
+            position: relative;
+        }
+
+        .product-card .img-container {
+            background-color: #f5f5f5;
+            overflow: hidden;
+            position: relative;
+            aspect-ratio: 4/5;
+        }
+
+        .product-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: opacity 0.5s ease;
+        }
+
+        .product-card .hover-img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            opacity: 0;
+        }
+
+        /* Efeito de hover no desktop, ou ao clicar no mobile */
+        @media (hover: hover) {
+            .product-card:hover .hover-img {
+                opacity: 1;
+            }
+
+            .product-card:hover .main-img {
+                opacity: 0;
+            }
+        }
+
+        /* Botão Favorito */
+        .fav-btn {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            z-index: 10;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .fav-btn:active {
+            transform: scale(0.8);
+        }
+
+        .fav-btn svg {
+            stroke: #000;
+            fill: none;
+            transition: fill 0.2s;
+        }
+
+        .fav-btn.active svg {
+            fill: #000;
+        }
+
+        /* Telão Interativo (Carousel) */
+        .hero-carousel {
+            display: flex;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            scroll-behavior: smooth;
+        }
+
+        .hero-slide {
+            scroll-snap-align: center;
+            flex: 0 0 100%;
+            position: relative;
+            height: 70vh;
+        }
+
+        .hero-gradient {
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.6), transparent 50%);
+        }
+
+        /* Menu Drawer */
+        #drawer {
+            transform: translateX(-100%);
+            transition: transform 0.3s ease-in-out;
+        }
+
+        #drawer.open {
+            transform: translateX(0);
+        }
+
+        #drawer-overlay {
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        #drawer-overlay.open {
+            opacity: 1;
+            pointer-events: auto;
+        }
     </style>
 </head>
+
 <body>
 
+    <!-- OVERLAY MENU -->
+    <div id="drawer-overlay" class="fixed inset-0 bg-black/50 z-50" onclick="toggleMenu()"></div>
+
+    <!-- MENU DRAWER -->
+    <div id="drawer" class="fixed top-0 left-0 bottom-0 w-4/5 max-w-sm bg-white z-[60] shadow-2xl flex flex-col">
+        <div class="p-6 border-b border-gray-100 flex justify-between items-center">
+            <h2 class="text-2xl font-bold tracking-tight">Dalla Imports</h2>
+            <button onclick="toggleMenu()" class="p-2 -mr-2"><i data-lucide="x"></i></button>
+        </div>
+        <div class="flex-1 overflow-y-auto p-6 flex flex-col gap-6">
+            <a href="#" onclick="showPage('home'); toggleMenu()"
+                class="text-lg font-medium hover:text-gray-500">Início</a>
+            <a href="#" class="text-lg font-medium hover:text-gray-500">Lançamentos</a>
+            <a href="#" class="text-lg font-medium hover:text-gray-500">Ligas Europeias</a>
+            <a href="#" class="text-lg font-medium hover:text-gray-500">Brasileirão</a>
+            <a href="#" class="text-lg font-medium hover:text-gray-500">Retrô</a>
+        </div>
+        <div class="p-6 border-t border-gray-100 bg-gray-50">
+            <a href="#" class="flex items-center gap-3 text-sm font-medium"><i data-lucide="user" size="18"></i> Minha
+                Conta</a>
+        </div>
+    </div>
+
     <!-- HEADER -->
-    <header class="fixed top-0 left-0 right-0 z-50 glass border-b border-black/5">
-        <div class="container mx-auto px-4 md:px-8 h-16 md:h-20 flex items-center justify-between">
-            <div class="flex items-center gap-4">
-                <button class="md:hidden p-2 hover:bg-black/5 rounded-full"><i data-lucide="menu"></i></button>
-                <div onclick="showPage('home')" class="cursor-pointer">
-                    <h1 class="text-xl md:text-2xl italic-black tracking-tighter uppercase">
-                        Dallas<span class="text-red-600">.</span>
-                    </h1>
-                </div>
+    <header class="fixed top-0 left-0 right-0 z-40 glass border-b border-gray-200">
+        <div class="container mx-auto px-4 h-16 flex items-center justify-between">
+            <!-- Esquerda: Menu -->
+            <div class="flex items-center w-1/3">
+                <button onclick="toggleMenu()" class="p-2 -ml-2 hover:bg-gray-100 rounded-full transition-colors">
+                    <i data-lucide="menu" size="24"></i>
+                </button>
             </div>
-            <nav class="hidden md:flex items-center gap-8">
-                <a href="#" class="text-sm font-black uppercase tracking-widest hover:text-red-600 transition-colors italic">Lançamentos</a>
-                <a href="#" class="text-sm font-black uppercase tracking-widest hover:text-red-600 transition-colors italic">Brasil</a>
-                <a href="#" class="text-sm font-black uppercase tracking-widest hover:text-red-600 transition-colors italic">Europeus</a>
-                <a href="#" class="text-sm font-black uppercase tracking-widest hover:text-red-600 transition-colors italic">Retrô</a>
-            </nav>
-            <div class="flex items-center gap-2 md:gap-4">
-                <button class="p-2 hover:bg-black/5 rounded-full"><i data-lucide="search" size="20"></i></button>
-                <button class="p-2 hover:bg-black/5 rounded-full"><i data-lucide="user" size="20"></i></button>
-                <button class="p-2 hover:bg-black/5 rounded-full relative">
+
+            <!-- Centro: Logo Clean -->
+            <div class="flex items-center justify-center w-1/3 cursor-pointer" onclick="showPage('home')">
+                <h1 class="text-xl md:text-2xl font-black tracking-tight uppercase">
+                    Dalla Imports
+                </h1>
+            </div>
+
+            <!-- Direita: Ações -->
+            <div class="flex items-center justify-end gap-1 w-1/3">
+                <button class="p-2 hover:bg-gray-100 rounded-full hidden md:block">
+                    <i data-lucide="search" size="20"></i>
+                </button>
+                <button class="p-2 hover:bg-gray-100 rounded-full relative" onclick="alert('Carrinho em breve!')">
                     <i data-lucide="shopping-bag" size="20"></i>
-                    <span class="absolute -top-1 -right-1 bg-red-600 text-white text-[10px] rounded-full w-4 h-4 flex items-center justify-center font-bold">0</span>
+                    <span
+                        class="absolute top-1 right-1 bg-black text-white text-[10px] rounded-full w-4 h-4 flex items-center justify-center font-bold">0</span>
                 </button>
             </div>
         </div>
     </header>
 
-    <!-- PAGE: HOME -->
-    <section id="home" class="page active pt-20 md:pt-24">
-        <!-- HERO -->
-        <div class="mx-4 md:mx-8 relative h-[60vh] md:h-[80vh] rounded-[2rem] md:rounded-[3rem] overflow-hidden group">
-            <img src="https://images.unsplash.com/photo-1551479460-5e76c686816a?w=1600&q=80" class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" alt="Hero">
-            <div class="absolute inset-0 hero-gradient"></div>
-            <div class="absolute inset-0 flex flex-col justify-end p-8 md:p-16 text-white">
-                <div class="max-w-2xl">
-                    <span class="inline-block bg-red-600 px-3 py-1 text-[10px] font-black uppercase tracking-widest italic mb-4">Coleção Retrô 2026</span>
-                    <h2 class="text-5xl md:text-8xl italic-black tracking-tighter uppercase leading-none mb-6">
-                        Relíquias do <br><span class="text-red-600">Futebol</span>
-                    </h2>
-                    <p class="text-lg md:text-xl text-white/80 mb-8 max-w-lg font-medium">Vista a história. Camisas lendárias que transcendem o tempo, com qualidade impecável.</p>
-                    <div class="flex gap-4">
-                        <button class="bg-white text-black px-8 py-4 rounded-full italic-black uppercase tracking-wider text-sm btn-hover shadow-xl">Explorar Coleção</button>
-                        <button class="bg-transparent border-2 border-white/30 backdrop-blur-md px-8 py-4 rounded-full italic-black uppercase tracking-wider text-sm btn-hover">Novidades</button>
+    <!-- ==============================================
+         PÁGINA: HOME
+         ============================================== -->
+    <section id="home" class="page active pt-16">
+
+        <!-- TELÃO INTERATIVO (HERO CAROUSEL) -->
+        <div class="relative w-full">
+            <div class="hero-carousel scrollbar-hide" id="hero-slider">
+
+                <!-- Slide 1 -->
+                <div class="hero-slide cursor-pointer" onclick="showPage('product')">
+                    <img src="https://images.unsplash.com/photo-1551489186-cf8726f514f8?w=1600"
+                        class="w-full h-full object-cover">
+                    <div class="absolute inset-0 hero-gradient"></div>
+                    <div class="absolute inset-0 flex flex-col justify-end p-6 md:p-12 text-white">
+                        <span
+                            class="bg-white text-black text-[10px] font-bold uppercase px-3 py-1 mb-3 self-start tracking-widest">Lançamento</span>
+                        <h2 class="text-4xl md:text-6xl font-black mb-2 uppercase leading-none">Real Madrid <br>24/25
+                        </h2>
+                        <p class="text-sm text-gray-300 mb-6">O manto merengue para a nova temporada.</p>
+                        <button
+                            class="bg-white text-black px-6 py-3 font-bold text-sm uppercase self-start hover:bg-gray-200 transition">Ver
+                            Camisa</button>
                     </div>
                 </div>
+
+                <!-- Slide 2 -->
+                <div class="hero-slide cursor-pointer" onclick="showPage('product')">
+                    <img src="https://images.unsplash.com/photo-1560272564-c83b66b1ad12?w=1600"
+                        class="w-full h-full object-cover">
+                    <div class="absolute inset-0 hero-gradient"></div>
+                    <div class="absolute inset-0 flex flex-col justify-end p-6 md:p-12 text-white">
+                        <span
+                            class="bg-white text-black text-[10px] font-bold uppercase px-3 py-1 mb-3 self-start tracking-widest">Exclusivo</span>
+                        <h2 class="text-4xl md:text-6xl font-black mb-2 uppercase leading-none">City Away <br>24/25</h2>
+                        <p class="text-sm text-gray-300 mb-6">Inovação e tradição em campo.</p>
+                        <button
+                            class="bg-white text-black px-6 py-3 font-bold text-sm uppercase self-start hover:bg-gray-200 transition">Ver
+                            Camisa</button>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Controles do Telão -->
+            <div class="absolute bottom-6 right-6 flex gap-2">
+                <button onclick="slideHero(-1)"
+                    class="w-10 h-10 bg-white/20 backdrop-blur border border-white/30 rounded-full flex items-center justify-center text-white hover:bg-white hover:text-black transition"><i
+                        data-lucide="chevron-left"></i></button>
+                <button onclick="slideHero(1)"
+                    class="w-10 h-10 bg-white/20 backdrop-blur border border-white/30 rounded-full flex items-center justify-center text-white hover:bg-white hover:text-black transition"><i
+                        data-lucide="chevron-right"></i></button>
             </div>
         </div>
 
-        <!-- BENEFITS -->
-        <div class="container mx-auto px-4 md:px-8 py-16 grid grid-cols-2 md:grid-cols-4 gap-6">
-            <div class="flex flex-col items-center text-center p-6 bg-white rounded-3xl border border-black/5 shadow-sm">
-                <div class="text-red-600 mb-3"><i data-lucide="truck" size="32"></i></div>
-                <h4 class="italic-black uppercase tracking-tighter text-sm">Frete Grátis</h4>
-                <p class="text-[10px] text-black/40 font-bold uppercase">Acima de R$ 299</p>
+        <!-- CARROSSEL FIFA (LIGAS E TIMES) -->
+        <div class="container mx-auto px-4 py-12 md:py-16">
+            <h3 class="text-2xl font-bold uppercase tracking-tight mb-6">Explorar por Liga</h3>
+
+            <!-- Abas de Ligas -->
+            <div id="league-tabs" class="flex gap-3 overflow-x-auto scrollbar-hide pb-2 mb-8">
+                <!-- Preenchido via JS -->
             </div>
-            <div class="flex flex-col items-center text-center p-6 bg-white rounded-3xl border border-black/5 shadow-sm">
-                <div class="text-red-600 mb-3"><i data-lucide="shield-check" size="32"></i></div>
-                <h4 class="italic-black uppercase tracking-tighter text-sm">Segurança</h4>
-                <p class="text-[10px] text-black/40 font-bold uppercase">Pagamento 100% Protegido</p>
+
+            <!-- Carrossel de Times -->
+            <div id="teams-carousel"
+                class="flex gap-4 overflow-x-auto scrollbar-hide pb-4 mb-10 transition-opacity duration-300">
+                <!-- Preenchido via JS -->
             </div>
-            <div class="flex flex-col items-center text-center p-6 bg-white rounded-3xl border border-black/5 shadow-sm">
-                <div class="text-red-600 mb-3"><i data-lucide="credit-card" size="32"></i></div>
-                <h4 class="italic-black uppercase tracking-tighter text-sm">Até 12x</h4>
-                <p class="text-[10px] text-black/40 font-bold uppercase">Sem Juros no Cartão</p>
+
+            <!-- Grade de Produtos Filtrados -->
+            <h3 class="text-xl font-bold uppercase tracking-tight mb-6" id="products-title">Todos os Produtos</h3>
+            <div id="products-grid" class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8">
+                <!-- Preenchido via JS -->
             </div>
-            <div class="flex flex-col items-center text-center p-6 bg-white rounded-3xl border border-black/5 shadow-sm">
-                <div class="text-red-600 mb-3"><i data-lucide="rotate-ccw" size="32"></i></div>
-                <h4 class="italic-black uppercase tracking-tighter text-sm">Troca Fácil</h4>
-                <p class="text-[10px] text-black/40 font-bold uppercase">30 Dias Garantidos</p>
+
+            <div id="no-products-msg" class="hidden text-center py-10 text-gray-400">
+                Nenhum produto encontrado para este time no momento.
             </div>
         </div>
 
-        <!-- PRODUCTS -->
-        <div class="container mx-auto px-4 md:px-8 py-8">
-            <div class="flex items-end justify-between mb-10">
-                <div>
-                    <div class="w-12 h-1 bg-red-600 mb-4"></div>
-                    <h2 class="text-3xl md:text-5xl italic-black tracking-tighter uppercase">Mais Vendidas</h2>
+        <!-- CATÁLOGO GERAL -->
+        <div class="bg-gray-50 py-16 border-t border-gray-200">
+            <div class="container mx-auto px-4">
+                <h2 class="text-2xl font-bold uppercase tracking-tight mb-8">Catálogo Completo</h2>
+
+                <div id="catalog-grid" class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8">
+                    <!-- Preenchido via JS (Todos os produtos) -->
                 </div>
-                <div class="flex gap-2">
-                    <button class="p-3 border-2 border-black/10 rounded-full hover:bg-black hover:text-white transition-all"><i data-lucide="arrow-left"></i></button>
-                    <button class="p-3 border-2 border-black/10 rounded-full hover:bg-black hover:text-white transition-all"><i data-lucide="arrow-right"></i></button>
-                </div>
-            </div>
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
-                <!-- PRODUCT 1 -->
-                <div onclick="showProduct('1')" class="group cursor-pointer">
-                    <div class="aspect-[3/4] rounded-3xl overflow-hidden bg-gray-100 relative mb-4">
-                        <img src="https://images.unsplash.com/photo-1551479460-5e76c686816a?w=600" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
-                        <div class="absolute top-4 right-4 translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500">
-                            <button class="bg-white text-black p-3 rounded-full shadow-lg hover:bg-red-600 hover:text-white transition-colors"><i data-lucide="shopping-bag" size="20"></i></button>
-                        </div>
-                    </div>
-                    <p class="text-[10px] text-red-600 font-black uppercase italic tracking-widest mb-1">Seleção Brasileira</p>
-                    <h3 class="italic-black uppercase tracking-tight mb-2 truncate">Brasil Retrô 1970 - Pelé</h3>
-                    <div class="flex justify-between items-center">
-                        <span class="text-xl italic-black text-red-600">R$ 349,90</span>
-                        <span class="text-[10px] font-bold text-black/20 uppercase">12x s/ juros</span>
-                    </div>
-                </div>
-                <!-- PRODUCT 2 -->
-                <div onclick="showProduct('2')" class="group cursor-pointer">
-                    <div class="aspect-[3/4] rounded-3xl overflow-hidden bg-gray-100 relative mb-4">
-                        <img src="https://images.unsplash.com/photo-1579952363873-27f3bade9f55?w=600" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
-                    </div>
-                    <p class="text-[10px] text-red-600 font-black uppercase italic tracking-widest mb-1">Argentina</p>
-                    <h3 class="italic-black uppercase tracking-tight mb-2 truncate">Argentina 1986 - Maradona</h3>
-                    <span class="text-xl italic-black text-red-600">R$ 399,90</span>
-                </div>
-                <!-- PRODUCT 3 -->
-                <div onclick="showProduct('3')" class="group cursor-pointer">
-                    <div class="aspect-[3/4] rounded-3xl overflow-hidden bg-gray-100 relative mb-4">
-                        <img src="https://images.unsplash.com/photo-1560272564-c83b66b1ad12?w=600" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
-                    </div>
-                    <p class="text-[10px] text-red-600 font-black uppercase italic tracking-widest mb-1">França</p>
-                    <h3 class="italic-black uppercase tracking-tight mb-2 truncate">França 1998 - Zidane</h3>
-                    <span class="text-xl italic-black text-red-600">R$ 389,90</span>
-                </div>
-                <!-- PRODUCT 4 -->
-                <div onclick="showProduct('4')" class="group cursor-pointer">
-                    <div class="aspect-[3/4] rounded-3xl overflow-hidden bg-gray-100 relative mb-4">
-                        <img src="https://images.unsplash.com/photo-1614632537197-38a17061c2bd?w=600" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
-                    </div>
-                    <p class="text-[10px] text-red-600 font-black uppercase italic tracking-widest mb-1">Itália</p>
-                    <h3 class="italic-black uppercase tracking-tight mb-2 truncate">Itália 2006 - Azzurri</h3>
-                    <span class="text-xl italic-black text-red-600">R$ 359,90</span>
+
+                <div class="flex justify-center mt-12">
+                    <button
+                        class="bg-white border-2 border-black text-black font-bold uppercase tracking-widest text-xs px-8 py-4 hover:bg-black hover:text-white transition-colors">
+                        Carregar Mais
+                    </button>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- PAGE: PRODUCT DETAIL -->
-    <section id="product" class="page pt-24 md:pt-32">
-        <div class="container mx-auto px-4 md:px-8">
-            <button onclick="showPage('home')" class="flex items-center gap-2 mb-8 italic-black uppercase text-xs tracking-widest hover:text-red-600 transition-colors">
-                <i data-lucide="arrow-left" size="16"></i> Voltar para Loja
+    <!-- ==============================================
+         PÁGINA: DETALHES DO PRODUTO (CLEAN)
+         ============================================== -->
+    <section id="product" class="page pt-20">
+        <div class="container mx-auto px-4 py-8">
+            <button onclick="showPage('home')"
+                class="flex items-center gap-2 mb-6 font-medium text-sm text-gray-500 hover:text-black transition-colors">
+                <i data-lucide="arrow-left" size="16"></i> Voltar
             </button>
-            <div class="flex flex-col md:flex-row gap-12">
-                <div class="w-full md:w-1/2">
-                    <div class="aspect-[4/5] rounded-[2rem] overflow-hidden bg-gray-100 shadow-2xl">
-                        <img id="detail-img" src="https://images.unsplash.com/photo-1551479460-5e76c686816a?w=1000" class="w-full h-full object-cover">
+
+            <div class="flex flex-col md:flex-row gap-8 lg:gap-16">
+                <!-- Imagem e Galeria -->
+                <div class="w-full md:w-1/2 flex flex-col gap-4">
+                    <div class="bg-[#f5f5f5] aspect-[4/5] relative w-full">
+                        <img id="detail-img" src="https://images.unsplash.com/photo-1551489186-cf8726f514f8?w=1000" class="w-full h-full object-cover transition-opacity duration-300">
+                        <button class="fav-btn" onclick="toggleFav(this)">
+                            <i data-lucide="heart" size="24"></i>
+                        </button>
+                    </div>
+                    <!-- Miniaturas (Ângulos) -->
+                    <div class="flex gap-4 overflow-x-auto scrollbar-hide py-2" id="detail-gallery">
+                        <!-- Injetado via JS -->
                     </div>
                 </div>
-                <div class="w-full md:w-1/2 space-y-8">
-                    <div>
-                        <span class="bg-red-600 text-white text-[10px] font-black uppercase tracking-widest px-3 py-1 italic mb-4 inline-block">Manto Sagrado</span>
-                        <h2 id="detail-name" class="text-4xl md:text-7xl italic-black tracking-tighter uppercase leading-none mb-4">Brasil Retrô 1970</h2>
-                        <p class="text-4xl font-black text-red-600 italic">R$ 349,90</p>
+
+                <!-- Informações -->
+                <div class="w-full md:w-1/2 flex flex-col justify-center">
+                    <div class="mb-6">
+                        <span class="text-gray-500 text-sm mb-2 block">Futebol • Performance</span>
+                        <h2 id="detail-name"
+                            class="text-3xl md:text-4xl font-bold uppercase tracking-tight leading-none mb-4">Real
+                            Madrid Home 24/25</h2>
+                        <p class="text-2xl font-bold">R$ 349,90</p>
                     </div>
-                    <p class="text-black/60 leading-relaxed font-medium">A lendária camisa amarela do tricampeonato mundial. Confeccionada em algodão premium com o escudo bordado em alta definição. Uma peça indispensável para colecionadores.</p>
-                    
-                    <div class="space-y-4">
-                        <h3 class="italic-black uppercase text-lg tracking-tighter">Selecione o Tamanho</h3>
-                        <div class="flex gap-3">
-                            <button class="w-14 h-14 rounded-xl border-2 border-black italic-black flex items-center justify-center bg-black text-white shadow-lg">P</button>
-                            <button class="w-14 h-14 rounded-xl border-2 border-black/10 italic-black flex items-center justify-center hover:border-black">M</button>
-                            <button class="w-14 h-14 rounded-xl border-2 border-black/10 italic-black flex items-center justify-center hover:border-black">G</button>
-                            <button class="w-14 h-14 rounded-xl border-2 border-black/10 italic-black flex items-center justify-center hover:border-black">GG</button>
+
+                    <p class="text-gray-600 mb-8 leading-relaxed">
+                        Desenhada para os verdadeiros torcedores. Esta camisa oferece conforto inigualável e um design
+                        limpo, perfeito para usar nas arquibancadas ou no dia a dia.
+                    </p>
+
+                    <!-- Tamanhos -->
+                    <div class="mb-8">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="font-bold uppercase text-sm">Tamanhos</h3>
+                            <a href="#" class="text-xs underline text-gray-500">Guia de Tamanhos</a>
+                        </div>
+                        <div class="grid grid-cols-4 gap-3">
+                            <button
+                                class="py-3 border border-gray-300 font-medium hover:border-black hover:bg-black hover:text-white transition">P</button>
+                            <button
+                                class="py-3 border border-gray-300 font-medium hover:border-black hover:bg-black hover:text-white transition">M</button>
+                            <button
+                                class="py-3 border border-gray-300 font-medium hover:border-black hover:bg-black hover:text-white transition bg-gray-100 text-gray-400 cursor-not-allowed">G</button>
+                            <button
+                                class="py-3 border border-gray-300 font-medium hover:border-black hover:bg-black hover:text-white transition">GG</button>
                         </div>
                     </div>
 
-                    <button onclick="showPage('checkout')" class="w-full bg-red-600 text-white py-6 rounded-full italic-black text-xl uppercase tracking-wider btn-hover shadow-2xl flex items-center justify-center gap-3">
-                        <i data-lucide="shopping-bag"></i> Comprar Agora
+                    <button onclick="showPage('checkout')"
+                        class="w-full bg-black text-white py-4 font-bold uppercase tracking-widest text-sm hover:bg-gray-800 transition-colors mb-4 flex justify-center items-center gap-2">
+                        Ir para o Checkout <i data-lucide="arrow-right" size="18"></i>
                     </button>
 
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div class="p-4 bg-white rounded-2xl border border-black/5 flex items-center gap-3">
-                            <i data-lucide="truck" class="text-red-600"></i>
-                            <span class="text-[10px] font-black uppercase italic">Frete Grátis</span>
-                        </div>
-                        <div class="p-4 bg-white rounded-2xl border border-black/5 flex items-center gap-3">
-                            <i data-lucide="shield-check" class="text-red-600"></i>
-                            <span class="text-[10px] font-black uppercase italic">Garantia</span>
-                        </div>
-                        <div class="p-4 bg-white rounded-2xl border border-black/5 flex items-center gap-3">
-                            <i data-lucide="credit-card" class="text-red-600"></i>
-                            <span class="text-[10px] font-black uppercase italic">12x s/ Juros</span>
-                        </div>
+                    <div class="bg-gray-50 p-4 text-sm text-gray-600 space-y-2 border border-gray-100">
+                        <p class="flex items-center gap-2"><i data-lucide="truck" size="16"></i> Frete grátis acima de
+                            R$ 299.</p>
+                        <p class="flex items-center gap-2"><i data-lucide="rotate-ccw" size="16"></i> Troca grátis em
+                            até 30 dias.</p>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- PAGE: CHECKOUT -->
-    <section id="checkout" class="page pt-24 md:pt-32">
-        <div class="max-w-6xl mx-auto px-4 md:px-8">
-            <div class="flex flex-col lg:flex-row gap-12">
-                <div class="flex-1 space-y-8">
-                    <div class="bg-white rounded-[2rem] p-8 border border-black/5 shadow-sm space-y-6">
-                        <h2 class="text-3xl italic-black uppercase tracking-tighter">Entrega e Pagamento</h2>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <input type="text" class="w-full bg-gray-100 rounded-xl px-4 py-4 font-bold outline-none" placeholder="Nome Completo">
-                            <input type="email" class="w-full bg-gray-100 rounded-xl px-4 py-4 font-bold outline-none" placeholder="E-mail">
-                            <input type="text" class="w-full bg-gray-100 rounded-xl px-4 py-4 font-bold outline-none" placeholder="CEP">
-                            <input type="text" class="w-full bg-gray-100 rounded-xl px-4 py-4 font-bold outline-none" placeholder="WhatsApp">
+    <!-- ==============================================
+         PÁGINA: CHECKOUT (SIMULAÇÃO)
+         ============================================== -->
+    <section id="checkout" class="page pt-20">
+        <div class="container mx-auto px-4 py-8 max-w-3xl">
+            <button onclick="showPage('product')"
+                class="flex items-center gap-2 mb-8 font-medium text-sm text-gray-500 hover:text-black transition-colors">
+                <i data-lucide="arrow-left" size="16"></i> Voltar para o Produto
+            </button>
+
+            <h2 class="text-3xl font-black uppercase tracking-tight mb-8 border-b pb-4">Checkout</h2>
+
+            <div class="flex flex-col md:flex-row gap-8">
+                <!-- Resumo -->
+                <div class="w-full md:w-1/2 order-2 md:order-1">
+                    <h3 class="font-bold uppercase tracking-tight mb-4">Informações de Contato</h3>
+                    <div class="space-y-4 mb-8">
+                        <input type="email" placeholder="E-mail"
+                            class="w-full p-4 border border-gray-300 bg-gray-50 focus:outline-none focus:border-black transition">
+                        <div class="grid grid-cols-2 gap-4">
+                            <input type="text" placeholder="Nome"
+                                class="w-full p-4 border border-gray-300 bg-gray-50 focus:outline-none focus:border-black transition">
+                            <input type="text" placeholder="Sobrenome"
+                                class="w-full p-4 border border-gray-300 bg-gray-50 focus:outline-none focus:border-black transition">
                         </div>
-                        <div class="h-px bg-black/5"></div>
-                        <div class="grid grid-cols-3 gap-4">
-                            <button onclick="setPay('pix')" id="pay-pix" class="p-6 rounded-2xl border-2 border-red-600 bg-red-50 text-red-600 flex flex-col items-center gap-2 italic-black uppercase text-[10px]">
-                                <i data-lucide="qr-code"></i> PIX
-                            </button>
-                            <button onclick="setPay('card')" id="pay-card" class="p-6 rounded-2xl border-2 border-black/5 text-black/20 flex flex-col items-center gap-2 italic-black uppercase text-[10px]">
-                                <i data-lucide="credit-card"></i> Cartão
-                            </button>
-                            <button onclick="setPay('boleto')" id="pay-boleto" class="p-6 rounded-2xl border-2 border-black/5 text-black/20 flex flex-col items-center gap-2 italic-black uppercase text-[10px]">
-                                <i data-lucide="file-text"></i> Boleto
-                            </button>
-                        </div>
-                        <button onclick="showPage('success')" class="w-full bg-red-600 text-white py-6 rounded-full italic-black text-xl uppercase tracking-wider btn-hover shadow-2xl">Finalizar Pedido</button>
+                        <input type="text" placeholder="Endereço Completo"
+                            class="w-full p-4 border border-gray-300 bg-gray-50 focus:outline-none focus:border-black transition">
                     </div>
+
+                    <h3 class="font-bold uppercase tracking-tight mb-4">Pagamento</h3>
+                    <div class="border border-gray-300 rounded-lg overflow-hidden mb-8">
+                        <label
+                            class="flex items-center gap-3 p-4 border-b border-gray-200 cursor-pointer hover:bg-gray-50 transition">
+                            <input type="radio" name="payment" checked class="accent-black">
+                            <span class="font-bold">PIX (5% de desconto)</span>
+                            <i data-lucide="zap" size="18" class="ml-auto text-green-500"></i>
+                        </label>
+                        <label
+                            class="flex items-center gap-3 p-4 border-b border-gray-200 cursor-pointer hover:bg-gray-50 transition">
+                            <input type="radio" name="payment" class="accent-black">
+                            <span class="font-bold">Cartão de Crédito</span>
+                            <i data-lucide="credit-card" size="18" class="ml-auto"></i>
+                        </label>
+                        <label class="flex items-center gap-3 p-4 cursor-pointer hover:bg-gray-50 transition">
+                            <input type="radio" name="payment" class="accent-black">
+                            <span class="font-bold">Boleto Bancário</span>
+                            <i data-lucide="file-text" size="18" class="ml-auto"></i>
+                        </label>
+                    </div>
+
+                    <button onclick="showPage('success')"
+                        class="w-full bg-black text-white py-4 font-bold uppercase tracking-widest text-sm hover:bg-gray-800 transition-colors flex justify-center items-center gap-2">
+                        Finalizar Pedido <i data-lucide="check-circle" size="18"></i>
+                    </button>
                 </div>
-                <div class="w-full lg:w-96">
-                    <div class="bg-white rounded-[2rem] p-8 border border-black/5 shadow-sm sticky top-32 space-y-6">
-                        <h3 class="italic-black uppercase text-xl">Seu Pedido</h3>
-                        <div class="flex gap-4">
-                            <img src="https://images.unsplash.com/photo-1551479460-5e76c686816a?w=200" class="w-20 h-20 object-cover rounded-xl bg-gray-100">
-                            <div>
-                                <p class="text-xs italic-black uppercase text-red-600">Brasil Retrô 1970</p>
-                                <p class="font-bold text-sm">Tamanho: P</p>
-                                <p class="italic-black">R$ 349,90</p>
-                            </div>
+
+                <!-- Carrinho -->
+                <div class="w-full md:w-1/2 order-1 md:order-2 bg-gray-50 p-6 border border-gray-100 h-fit">
+                    <h3 class="font-bold uppercase tracking-tight mb-4">Seu Pedido</h3>
+                    <div class="flex items-center gap-4 border-b border-gray-200 pb-4 mb-4">
+                        <div class="w-20 h-24 bg-gray-200">
+                            <img src="https://images.unsplash.com/photo-1551489186-cf8726f514f8?w=300"
+                                class="w-full h-full object-cover">
                         </div>
-                        <div class="h-px bg-black/5"></div>
-                        <div class="flex justify-between items-center italic-black text-2xl">
-                            <span>Total</span>
-                            <span class="text-red-600">R$ 349,90</span>
+                        <div>
+                            <h4 class="font-bold uppercase text-sm">Real Madrid Home 24/25</h4>
+                            <p class="text-gray-500 text-xs mt-1">Tam: M</p>
+                            <p class="font-bold mt-2">R$ 349,90</p>
                         </div>
+                    </div>
+                    <div class="flex justify-between items-center mb-2 text-sm">
+                        <span class="text-gray-500">Subtotal</span>
+                        <span class="font-bold">R$ 349,90</span>
+                    </div>
+                    <div class="flex justify-between items-center mb-4 text-sm">
+                        <span class="text-gray-500">Frete</span>
+                        <span class="font-bold text-green-600">Grátis</span>
+                    </div>
+                    <div class="flex justify-between items-center border-t border-gray-200 pt-4 text-lg">
+                        <span class="font-black uppercase tracking-tight">Total</span>
+                        <span class="font-black">R$ 349,90</span>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- PAGE: SUCCESS -->
-    <section id="success" class="page pt-40 pb-20">
-        <div class="max-w-md mx-auto text-center px-4">
-            <div class="w-24 h-24 bg-red-600 rounded-full flex items-center justify-center mx-auto mb-8 shadow-2xl">
-                <i data-lucide="check" size="48" class="text-white"></i>
+    <!-- ==============================================
+         PÁGINA: SUCESSO (SIMULAÇÃO)
+         ============================================== -->
+    <section id="success" class="page pt-20 pb-20">
+        <div class="container mx-auto px-4 py-16 max-w-lg text-center flex flex-col items-center">
+            <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center text-green-600 mb-6">
+                <i data-lucide="check" size="40"></i>
             </div>
-            <h2 class="text-5xl italic-black uppercase tracking-tighter mb-4 leading-none">Pedido <br><span class="text-red-600">Confirmado!</span></h2>
-            <p class="text-black/60 font-medium mb-12">Você receberá todos os detalhes no seu e-mail. Obrigado por escolher a Dallas!</p>
-            <button onclick="showPage('home')" class="w-full bg-black text-white py-6 rounded-full italic-black text-xl uppercase tracking-wider btn-hover shadow-2xl">Voltar para a Loja</button>
+            <h2 class="text-4xl font-black uppercase tracking-tight mb-4">Pedido Confirmado!</h2>
+            <p class="text-gray-600 mb-8 leading-relaxed">
+                Muito obrigado pela sua compra! Seu pedido <strong>#DL-9823</strong> foi processado com sucesso e logo o
+                seu novo manto estará a caminho.
+            </p>
+            <div class="bg-gray-50 w-full p-6 border border-gray-200 mb-8 text-left">
+                <p class="text-sm text-gray-500 mb-1">Status</p>
+                <p class="font-bold mb-4 text-green-600 flex items-center gap-2"><i data-lucide="loader" size="16"
+                        class="animate-spin"></i> Aguardando Pagamento PIX</p>
+
+                <p class="text-sm text-gray-500 mb-1">Chave Copia e Cola</p>
+                <div class="flex">
+                    <input type="text" value="00020101021126580014br.gov.bcb.pix..." readonly
+                        class="w-full bg-white border border-gray-300 p-2 text-xs text-gray-400 focus:outline-none">
+                    <button
+                        class="bg-black text-white px-4 text-xs font-bold uppercase hover:bg-gray-800">Copiar</button>
+                </div>
+            </div>
+            <button onclick="showPage('home')"
+                class="bg-white border-2 border-black text-black py-4 px-8 font-bold uppercase tracking-widest text-sm hover:bg-black hover:text-white transition-colors">
+                Voltar para a Loja
+            </button>
         </div>
     </section>
 
     <!-- FOOTER -->
-    <footer class="mt-20 bg-black text-white py-20 px-8 rounded-t-[3rem] md:rounded-t-[5rem]">
-        <div class="container mx-auto grid grid-cols-1 md:grid-cols-4 gap-12">
-            <div class="col-span-1 md:col-span-2">
-                <h2 class="text-4xl italic-black uppercase tracking-tighter mb-6 italic">Dallas<span class="text-red-600">.</span> Imports</h2>
-                <p class="text-white/40 max-w-sm font-medium">Especialistas em mantos sagrados. Trazemos a história do futebol mundial para você com qualidade premium.</p>
+    <footer class="bg-black text-white py-16">
+        <div class="container mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-12">
+            <div>
+                <h2 class="text-2xl font-black uppercase tracking-tight mb-4">Dalla Imports</h2>
+                <p class="text-gray-400 text-sm">O simples é bonito. Especialistas em mantos sagrados com qualidade
+                    premium para o seu jogo e estilo.</p>
             </div>
             <div>
-                <h4 class="italic-black uppercase mb-6 tracking-widest text-sm text-red-600">Links</h4>
-                <ul class="space-y-3 text-white/30 font-bold uppercase text-[10px]">
-                    <li class="hover:text-white cursor-pointer">Início</li>
-                    <li class="hover:text-white cursor-pointer">Coleções</li>
-                    <li class="hover:text-white cursor-pointer">Rastreio</li>
-                    <li class="hover:text-white cursor-pointer">Contato</li>
+                <h4 class="font-bold uppercase mb-4 text-sm tracking-widest">Loja</h4>
+                <ul class="space-y-3 text-gray-400 text-sm">
+                    <li><a href="#" class="hover:text-white transition">Lançamentos</a></li>
+                    <li><a href="#" class="hover:text-white transition">Mais Vendidas</a></li>
+                    <li><a href="#" class="hover:text-white transition">Guia de Tamanhos</a></li>
                 </ul>
             </div>
             <div>
-                <h4 class="italic-black uppercase mb-6 tracking-widest text-sm text-red-600">Social</h4>
-                <ul class="space-y-3 text-white/30 font-bold uppercase text-[10px]">
-                    <li class="hover:text-white cursor-pointer">Instagram</li>
-                    <li class="hover:text-white cursor-pointer">WhatsApp</li>
+                <h4 class="font-bold uppercase mb-4 text-sm tracking-widest">Atendimento</h4>
+                <ul class="space-y-3 text-gray-400 text-sm">
+                    <li><a href="#" class="hover:text-white transition">WhatsApp</a></li>
+                    <li><a href="#" class="hover:text-white transition">Instagram</a></li>
+                    <li><a href="#" class="hover:text-white transition">Rastrear Pedido</a></li>
                 </ul>
             </div>
         </div>
     </footer>
 
     <script>
-        // INIT LUCIDE ICONS
+        // INIT ICONS
         lucide.createIcons();
 
-        // NAVIGATION LOGIC
+        // NAVEGAÇÃO / ESTADO
         function showPage(pageId) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.getElementById(pageId).classList.add('active');
             window.scrollTo(0, 0);
         }
 
-        // PRODUCT SELECT LOGIC
-        function showProduct(id) {
-            // Mock data update for presentation
-            const names = {
-                '1': 'Brasil Retrô 1970 - Pelé',
-                '2': 'Argentina 1986 - Maradona',
-                '3': 'França 1998 - Zidane',
-                '4': 'Itália 2006 - Azzurri'
-            };
-            const imgs = {
-                '1': 'https://images.unsplash.com/photo-1551479460-5e76c686816a?w=1000',
-                '2': 'https://images.unsplash.com/photo-1579952363873-27f3bade9f55?w=1000',
-                '3': 'https://images.unsplash.com/photo-1560272564-c83b66b1ad12?w=1000',
-                '4': 'https://images.unsplash.com/photo-1614632537197-38a17061c2bd?w=1000'
-            };
-            document.getElementById('detail-name').innerText = names[id];
-            document.getElementById('detail-img').src = imgs[id];
+        // MENU LATERAL
+        function toggleMenu() {
+            const drawer = document.getElementById('drawer');
+            const overlay = document.getElementById('drawer-overlay');
+            drawer.classList.toggle('open');
+            overlay.classList.toggle('open');
+            // Impede scroll do body quando menu aberto
+            document.body.style.overflow = drawer.classList.contains('open') ? 'hidden' : '';
+        }
+
+        // FAVORITOS
+        function toggleFav(btn) {
+            event.stopPropagation(); // Evita abrir a página do produto
+            btn.classList.toggle('active');
+        }
+
+        // TELÃO INTERATIVO (CAROUSEL AUTO)
+        const heroSlider = document.getElementById('hero-slider');
+        let slideInterval;
+
+        function startSlide() {
+            slideInterval = setInterval(() => slideHero(1), 4000);
+        }
+        function resetSlide() {
+            clearInterval(slideInterval);
+            startSlide();
+        }
+        function slideHero(direction) {
+            if (!heroSlider) return;
+            const width = heroSlider.clientWidth;
+            heroSlider.scrollBy({ left: width * direction, behavior: 'smooth' });
+
+            // Loop simples (Se chegou no final, volta pro inicio e vice versa)
+            setTimeout(() => {
+                if (heroSlider.scrollLeft >= heroSlider.scrollWidth - width - 10 && direction === 1) {
+                    heroSlider.scrollTo({ left: 0, behavior: 'smooth' });
+                } else if (heroSlider.scrollLeft <= 0 && direction === -1) {
+                    heroSlider.scrollTo({ left: heroSlider.scrollWidth, behavior: 'smooth' });
+                }
+            }, 400);
+            resetSlide();
+        }
+        // Inicia o carrossel do topo
+        startSlide();
+
+
+        /* =======================================================
+           LÓGICA DO CARROSSEL FIFA (MOCK DATA)
+           ======================================================= */
+
+        // DADOS
+        const LEAGUES = [
+            { id: 'premier', name: 'Premier League', logo: 'imagens logo/premier ligue.png' },
+            { id: 'laliga', name: 'LaLiga', logo: 'imagens logo/laliga.png' },
+            { id: 'brasileirao', name: 'Brasileirão', logo: 'imagens logo/brasileirão.webp' },
+            { id: 'serie_a', name: 'Serie A', logo: 'imagens logo/serie A.png' },
+            { id: 'bundesliga', name: 'Bundesliga', logo: 'imagens logo/Bundesliga_logo_(2017).png' },
+            { id: 'ligue_1', name: 'Ligue 1', logo: 'imagens logo/Ligue1_Uber_Eats_logo.png' }
+        ];
+
+        const TEAMS = {
+            premier: [
+                { id: 'arsenal', name: 'Arsenal', logo: 'imagens logo/imagens logo time/premier ligue/Arsenal_FC.svg.png' },
+                { id: 'aston_villa', name: 'Aston Villa', logo: 'imagens logo/imagens logo time/premier ligue/Aston_Villa_FC_new_crest.svg.png' },
+                { id: 'birmingham', name: 'Birmingham City', logo: 'imagens logo/imagens logo time/premier ligue/Birmingham_City_FC_logo.svg.png' },
+                { id: 'bolton', name: 'Bolton Wanderers', logo: 'imagens logo/imagens logo time/premier ligue/Bolton_Wanderers_FC_new_logo.png' },
+                { id: 'bournemouth', name: 'Bournemouth', logo: 'imagens logo/imagens logo time/premier ligue/AfcBournemouth.png' },
+                { id: 'bradford', name: 'Bradford City', logo: 'imagens logo/imagens logo time/premier ligue/Bradford_City_AFC_crest.svg.png' },
+                { id: 'brighton', name: 'Brighton', logo: 'imagens logo/imagens logo time/premier ligue/Brighton_and_Hove_Albion_FC_crest.svg.png' },
+                { id: 'burnley', name: 'Burnley', logo: 'imagens logo/imagens logo time/premier ligue/Burnley.png' },
+                { id: 'cardiff', name: 'Cardiff City', logo: 'imagens logo/imagens logo time/premier ligue/Cardiff_City_crest.svg.png' },
+                { id: 'chelsea', name: 'Chelsea', logo: 'imagens logo/imagens logo time/premier ligue/Chelsea_FC.svg.png' },
+                { id: 'crystal_palace', name: 'Crystal Palace', logo: 'imagens logo/imagens logo time/premier ligue/Crystal_Palace_FC_logo.png' },
+                { id: 'derby', name: 'Derby County', logo: 'imagens logo/imagens logo time/premier ligue/Derby_County_crest.svg.png' },
+                { id: 'everton', name: 'Everton', logo: 'imagens logo/imagens logo time/premier ligue/Everton_FC_logo.svg.png' },
+                { id: 'fulham', name: 'Fulham', logo: 'imagens logo/imagens logo time/premier ligue/Fulham_FC.svg.png' },
+                { id: 'ipswich', name: 'Ipswich Town', logo: 'imagens logo/imagens logo time/premier ligue/Ipswich_Town_FC.png' },
+                { id: 'leeds', name: 'Leeds United', logo: 'imagens logo/imagens logo time/premier ligue/Leeds_United_F.C._logo.svg.png' },
+                { id: 'leicester', name: 'Leicester City', logo: 'imagens logo/imagens logo time/premier ligue/Leicester_City_crest.png' },
+                { id: 'lincoln', name: 'Lincoln City', logo: 'imagens logo/imagens logo time/premier ligue/Lincoln_City_FC.png' },
+                { id: 'liverpool', name: 'Liverpool', logo: 'imagens logo/imagens logo time/premier ligue/Logo-Liverpool.png' },
+                { id: 'man_city', name: 'Manchester City', logo: 'imagens logo/imagens logo time/premier ligue/Manchester_City_Football_Club.png' },
+                { id: 'man_united', name: 'Manchester United', logo: 'imagens logo/imagens logo time/premier ligue/united.png' },
+                { id: 'middlesbrough', name: 'Middlesbrough', logo: 'imagens logo/imagens logo time/premier ligue/Middlesbrough_FC_crest.svg.png' },
+                { id: 'newcastle', name: 'Newcastle United', logo: 'imagens logo/imagens logo time/premier ligue/Newcastle_United_Logo.svg.png' },
+                { id: 'norwich', name: 'Norwich City', logo: 'imagens logo/imagens logo time/premier ligue/Norwich_City_FC.png' },
+                { id: 'nottingham', name: 'Nottingham Forest', logo: 'imagens logo/imagens logo time/premier ligue/Nottingham_Forest.png' },
+                { id: 'plymouth', name: 'Plymouth Argyle', logo: 'imagens logo/imagens logo time/premier ligue/Plymouth_Argyle_F.C._logo.svg.png' },
+                { id: 'portsmouth', name: 'Portsmouth', logo: 'imagens logo/imagens logo time/premier ligue/Portsmouth_FC.png' },
+                { id: 'preston', name: 'Preston North End', logo: 'imagens logo/imagens logo time/premier ligue/Preston_North_End_FC.svg.png' },
+                { id: 'sheffield_utd', name: 'Sheffield United', logo: 'imagens logo/imagens logo time/premier ligue/Sheffield_United_FC.png' },
+                { id: 'sheffield_wed', name: 'Sheffield Wednesday', logo: 'imagens logo/imagens logo time/premier ligue/Sheffield_Wednesday_FC_logo.png' },
+                { id: 'southampton', name: 'Southampton', logo: 'imagens logo/imagens logo time/premier ligue/Southampton_FC.svg.png' },
+                { id: 'sunderland', name: 'Sunderland', logo: 'imagens logo/imagens logo time/premier ligue/Logo_Sunderland.svg.png' },
+                { id: 'tottenham', name: 'Tottenham Hotspur', logo: 'imagens logo/imagens logo time/premier ligue/Tottenham_Hotspur.svg.png' },
+                { id: 'watford', name: 'Watford', logo: 'imagens logo/imagens logo time/premier ligue/Watford_FC_Logo.png' },
+                { id: 'west_brom', name: 'West Bromwich', logo: 'imagens logo/imagens logo time/premier ligue/West_Bromwich_Albion.png' },
+                { id: 'west_ham', name: 'West Ham United', logo: 'imagens logo/imagens logo time/premier ligue/West_Ham_United_FC_logo.png' },
+                { id: 'wolves', name: 'Wolverhampton', logo: 'imagens logo/imagens logo time/premier ligue/Wolverhampton_Wanderers.png' },
+                { id: 'wrexham', name: 'Wrexham', logo: 'imagens logo/imagens logo time/premier ligue/Wrexham_FC_Logo.png' }
+            ],
+            laliga: [
+                { id: 'albacete', name: 'Albacete', logo: 'imagens logo/imagens logo time/la liga/Albacete_Balompié.png' },
+                { id: 'almeria', name: 'Almeria', logo: 'imagens logo/imagens logo time/la liga/UD_Almeria.png' },
+                { id: 'athletic_bilbao', name: 'Athletic Bilbao', logo: 'imagens logo/imagens logo time/la liga/Athletic_Club_de_Bilbao.png' },
+                { id: 'atletico_madrid', name: 'Atlético de Madrid', logo: 'imagens logo/imagens logo time/la liga/AtleticoMadrid2017.png' },
+                { id: 'barcelona', name: 'Barcelona', logo: 'imagens logo/imagens logo time/la liga/FCBarcelona.svg.png' },
+                { id: 'burgos', name: 'Burgos', logo: 'imagens logo/imagens logo time/la liga/Burgos_CF_escudo.png' },
+                { id: 'cadiz', name: 'Cádiz', logo: 'imagens logo/imagens logo time/la liga/Cádiz_Club_de_Fútbol_logo.png' },
+                { id: 'cartagena', name: 'Cartagena', logo: 'imagens logo/imagens logo time/la liga/FC_Cartagena.png' },
+                { id: 'celta', name: 'Celta de Vigo', logo: 'imagens logo/imagens logo time/la liga/Celta_de_Vigo.png' },
+                { id: 'ceuta', name: 'Ceuta', logo: 'imagens logo/imagens logo time/la liga/AD_Ceuta_escudo.png' },
+                { id: 'cordoba', name: 'Cordoba', logo: 'imagens logo/imagens logo time/la liga/Córdoba_CF_logo.svg.png' },
+                { id: 'deportivo_alaves', name: 'Alavés', logo: 'imagens logo/imagens logo time/la liga/Deportivo_Alaves_logo_(2020).svg.png' },
+                { id: 'deportivo_lacoruna', name: 'Deportivo La Coruna', logo: 'imagens logo/imagens logo time/la liga/Deportivo_de_La_Coruña.png' },
+                { id: 'elche', name: 'Elche', logo: 'imagens logo/imagens logo time/la liga/elche club.png' },
+                { id: 'espanyol', name: 'Espanyol', logo: 'imagens logo/imagens logo time/la liga/Rcd_espanyol_logo.png' },
+                { id: 'getafe', name: 'Getafe', logo: 'imagens logo/imagens logo time/la liga/Getafe_logo.png' },
+                { id: 'girona', name: 'Girona', logo: 'imagens logo/imagens logo time/la liga/Girona_FC.png' },
+                { id: 'granada', name: 'Granada', logo: 'imagens logo/imagens logo time/la liga/Granada_FC_logo.png' },
+                { id: 'hercules', name: 'Hércules', logo: 'imagens logo/imagens logo time/la liga/Hércules_CF.png' },
+                { id: 'huesca', name: 'Huesca', logo: 'imagens logo/imagens logo time/la liga/Sd_huesca.png' },
+                { id: 'las_palmas', name: 'Las Palmas', logo: 'imagens logo/imagens logo time/la liga/UD_Las_Palmas.png' },
+                { id: 'leganes', name: 'Leganés', logo: 'imagens logo/imagens logo time/la liga/CD_Leganés.png' },
+                { id: 'levante', name: 'Levante', logo: 'imagens logo/imagens logo time/la liga/Levante_logo2014.svg.png' },
+                { id: 'malaga', name: 'Málaga CF', logo: 'imagens logo/imagens logo time/la liga/Málaga_CF.png' },
+                { id: 'mallorca', name: 'Mallorca', logo: 'imagens logo/imagens logo time/la liga/RCD_Mallorca.png' },
+                { id: 'osasuna', name: 'Osasuna', logo: 'imagens logo/imagens logo time/la liga/CA_Osasuna.png' },
+                { id: 'racing_santander', name: 'Racing de Santander', logo: 'imagens logo/imagens logo time/la liga/Racing_de_Santander_escudo.png' },
+                { id: 'rayo_vallecano', name: 'Rayo Vallecano', logo: 'imagens logo/imagens logo time/la liga/Rayo_Vallecano_logo.svg.png' },
+                { id: 'real_betis', name: 'Real Betis', logo: 'imagens logo/imagens logo time/la liga/Real_Betis_Balompié.png' },
+                { id: 'real_madrid', name: 'Real Madrid', logo: 'imagens logo/imagens logo time/la liga/Real_Madrid_CF.svg.png' },
+                { id: 'real_murcia', name: 'Murcia', logo: 'imagens logo/imagens logo time/la liga/Real_Murcia_CF.png' },
+                { id: 'real_oviedo', name: 'Real Oviedo', logo: 'imagens logo/imagens logo time/la liga/Real_Oviedo.png' },
+                { id: 'real_sociedad', name: 'Real Sociedad', logo: 'imagens logo/imagens logo time/la liga/Real_Sociedad_logo.svg.png' },
+                { id: 'real_valladolid', name: 'Valladolid', logo: 'imagens logo/imagens logo time/la liga/Real_Valladolid_CF.png' },
+                { id: 'real_zaragoza', name: 'Zaragoza', logo: 'imagens logo/imagens logo time/la liga/Real_Zaragoza_logo.png' },
+                { id: 'sevilla', name: 'Sevilla', logo: 'imagens logo/imagens logo time/la liga/Sevilla_FC_logo.svg.png' },
+                { id: 'sporting_gijon', name: 'Sporting de Gijón', logo: 'imagens logo/imagens logo time/la liga/Sporting_de_Gijon.png' },
+                { id: 'tenerife', name: 'Tenerife', logo: 'imagens logo/imagens logo time/la liga/CD_Tenerife.png' },
+                { id: 'valencia', name: 'Valencia', logo: 'imagens logo/imagens logo time/la liga/Valencia_Cf_Logo_original.png' },
+                { id: 'villarreal', name: 'Villarreal', logo: 'imagens logo/imagens logo time/la liga/Villarreal_CF_logo.svg.png' }
+            ],
+            brasileirao: [
+                { id: 'america_mg', name: 'América-MG', logo: 'imagens logo/imagens logo time/brasileirão/Escudo_oficial_do_América_Futebol_Clube.svg.png' },
+                { id: 'athletico_pr', name: 'Athletico-PR', logo: 'imagens logo/imagens logo time/brasileirão/Athletico_Paranaense_(Logo_2019).svg.png' },
+                { id: 'atletico_mg', name: 'Atlético-MG', logo: 'imagens logo/imagens logo time/brasileirão/Atletico_mineiro_galo.png' },
+                { id: 'avai', name: 'Avaí', logo: 'imagens logo/imagens logo time/brasileirão/Avaí_Futebol_Clube_logo.svg.png' },
+                { id: 'bahia', name: 'Bahia', logo: 'imagens logo/imagens logo time/brasileirão/Esporte_Clube_Bahia_logo.svg.png' },
+                { id: 'botafogo', name: 'Botafogo', logo: 'imagens logo/imagens logo time/brasileirão/Botafogo_de_Futebol_e_Regatas_logo.svg.png' },
+                { id: 'bragantino', name: 'Bragantino', logo: 'imagens logo/imagens logo time/brasileirão/RedBullBragantino.png' },
+                { id: 'ceara', name: 'Ceará', logo: 'imagens logo/imagens logo time/brasileirão/Ceará_Sporting_Club_logo.svg.png' },
+                { id: 'chapecoense', name: 'Chapecoense', logo: 'imagens logo/imagens logo time/brasileirão/chapecoense-das-cinzas-logo-03A0C3CCDD-seeklogo.com.png' },
+                { id: 'confianca', name: 'Confiança', logo: 'imagens logo/imagens logo time/brasileirão/AD_Confiança_shield.png' },
+                { id: 'corinthians', name: 'Corinthians', logo: 'imagens logo/imagens logo time/brasileirão/Corinthians_simbolo.png' },
+                { id: 'coritiba', name: 'Coritiba', logo: 'imagens logo/imagens logo time/brasileirão/Coritiba_Foot_Ball_Club_logo.svg.png' },
+                { id: 'criciuma', name: 'Criciúma', logo: 'imagens logo/imagens logo time/brasileirão/Criciúma_Esporte_Clube_logo_(until_2025).svg.png' },
+                { id: 'cruzeiro', name: 'Cruzeiro', logo: 'imagens logo/imagens logo time/brasileirão/Cruzeiro_Esporte_Clube_(logo).svg.png' },
+                { id: 'cuiaba', name: 'Cuiabá', logo: 'imagens logo/imagens logo time/brasileirão/Cuiabá_EC_crest.png' },
+                { id: 'flamengo', name: 'Flamengo', logo: 'imagens logo/imagens logo time/brasileirão/Flamengo-RJ_(BRA).png' },
+                { id: 'fluminense', name: 'Fluminense', logo: 'imagens logo/imagens logo time/brasileirão/Fluminense_FC_escudo.png' },
+                { id: 'fortaleza', name: 'Fortaleza', logo: 'imagens logo/imagens logo time/brasileirão/Fortaleza_Esporte_Clube_logo.png' },
+                { id: 'gremio', name: 'Grêmio', logo: 'imagens logo/imagens logo time/brasileirão/Gremio_logo.svg.png' },
+                { id: 'guarani', name: 'Guarani', logo: 'imagens logo/imagens logo time/brasileirão/Guarani_Futebol_Clube_logo.svg.png' },
+                { id: 'internacional', name: 'Internacional', logo: 'imagens logo/imagens logo time/brasileirão/Escudo_do_Sport_Club_Internacional.svg.png' },
+                { id: 'juventude', name: 'Juventude', logo: 'imagens logo/imagens logo time/brasileirão/Juventude_crest.png' },
+                { id: 'nautico', name: 'Náutico', logo: 'imagens logo/imagens logo time/brasileirão/Simbolo-escudo-nautico.png' },
+                { id: 'palmeiras', name: 'Palmeiras', logo: 'imagens logo/imagens logo time/brasileirão/Palmeiras_logo.svg.png' },
+                { id: 'paysandu', name: 'Paysandu', logo: 'imagens logo/imagens logo time/brasileirão/PaysanduSC.png' },
+                { id: 'portuguesa', name: 'Portuguesa', logo: 'imagens logo/imagens logo time/brasileirão/Associação_Portuguesa_de_Desportos.svg.png' },
+                { id: 'remo', name: 'Remo', logo: 'imagens logo/imagens logo time/brasileirão/Clube_do_Remo.svg.png' },
+                { id: 'santa_cruz', name: 'Santa Cruz', logo: 'imagens logo/imagens logo time/brasileirão/Santa_Cruz_Futebol_Clube_logo.svg.png' },
+                { id: 'santos', name: 'Santos', logo: 'imagens logo/imagens logo time/brasileirão/Santos_logo.svg.png' },
+                { id: 'sao_paulo', name: 'São Paulo', logo: 'imagens logo/imagens logo time/brasileirão/Brasao_do_Sao_Paulo_Futebol_Clube.svg.png' },
+                { id: 'sport', name: 'Sport Recife', logo: 'imagens logo/imagens logo time/brasileirão/Sport_Club_do_Recife.png' },
+                { id: 'vasco', name: 'Vasco da Gama', logo: 'imagens logo/imagens logo time/brasileirão/EscudoDoVascoDaGama.svg.png' },
+                { id: 'vitoria', name: 'Vitória', logo: 'imagens logo/imagens logo time/brasileirão/Esporte_Clube_Vitória_(2024).svg.png' },
+                { id: 'volta_redonda', name: 'Volta Redonda', logo: 'imagens logo/imagens logo time/brasileirão/Volta_Redonda_Futebol_Clube.svg.png' }
+            ],
+            serie_a: [
+                { id: 'atalanta', name: 'Atalanta', logo: 'imagens logo/imagens logo time/serie A/AtalantaBC.svg.png' },
+                { id: 'bologna', name: 'Bologna', logo: 'imagens logo/imagens logo time/serie A/Bologna_F.C._1909_logo.svg.png' },
+                { id: 'brescia', name: 'Brescia', logo: 'imagens logo/imagens logo time/serie A/Brescia_calcio_badge.svg.png' },
+                { id: 'cagliari', name: 'Cagliari', logo: 'imagens logo/imagens logo time/serie A/Cagliari_Calcio_Logo_2015.png' },
+                { id: 'como', name: 'Como 1907', logo: 'imagens logo/imagens logo time/serie A/Logo_Como_1907_2019.png' },
+                { id: 'cremonese', name: 'Cremonese', logo: 'imagens logo/imagens logo time/serie A/US_Cremonese_logo.svg.png' },
+                { id: 'fiorentina', name: 'Fiorentina', logo: 'imagens logo/imagens logo time/serie A/ACF_Fiorentina_-_logo_(Italy,_2022).svg.png' },
+                { id: 'genoa', name: 'Genoa', logo: 'imagens logo/imagens logo time/serie A/GenoaCFC.png' },
+                { id: 'hellas_verona', name: 'Hellas Verona', logo: 'imagens logo/imagens logo time/serie A/Hellas_Verona.png' },
+                { id: 'inter', name: 'Inter de Milão', logo: 'imagens logo/imagens logo time/serie A/FC_Internazionale_Milano_2021.svg.png' },
+                { id: 'juventus', name: 'Juventus', logo: 'imagens logo/imagens logo time/serie A/Juventus_FC_2017_logo.png' },
+                { id: 'lazio', name: 'Lazio', logo: 'imagens logo/imagens logo time/serie A/SS_Lazio.png' },
+                { id: 'milan', name: 'Milan', logo: 'imagens logo/imagens logo time/serie A/Logo_of_AC_Milan.svg.png' },
+                { id: 'napoli', name: 'Napoli', logo: 'imagens logo/imagens logo time/serie A/SSC_Napoli_2025_(white_and_azure).svg.png' },
+                { id: 'palermo', name: 'Palermo', logo: 'imagens logo/imagens logo time/serie A/Palermo_Calcio_logo_(2019).svg.png' },
+                { id: 'parma', name: 'Parma', logo: 'imagens logo/imagens logo time/serie A/Logo_Parma_Calcio_1913_(adozione_2016).png' },
+                { id: 'roma', name: 'Roma', logo: 'imagens logo/imagens logo time/serie A/AS_Roma_logo.png' },
+                { id: 'sampdoria', name: 'Sampdoria', logo: 'imagens logo/imagens logo time/serie A/U.C._Sampdoria_logo.svg.png' },
+                { id: 'sassuolo', name: 'Sassuolo', logo: 'imagens logo/imagens logo time/serie A/USSassuo_logo2014.png' },
+                { id: 'sorrento', name: 'Sorrento Calcio', logo: 'imagens logo/imagens logo time/serie A/Logo_Sorrento_Calcio.svg.png' },
+                { id: 'spezia', name: 'Spezia', logo: 'imagens logo/imagens logo time/serie A/Spezia_Calcio_crest.svg.png' },
+                { id: 'torino', name: 'Torino', logo: 'imagens logo/imagens logo time/serie A/Torino_FC_logo.png' },
+                { id: 'venezia', name: 'Venezia', logo: 'imagens logo/imagens logo time/serie A/Venezia_FC_Stemma.svg.png' }
+            ],
+            bundesliga: [
+                { id: 'arminia', name: 'Arminia Bielefeld', logo: 'imagens logo/imagens logo time/bundesliga/Arminia_Bielefeld_Logo+Shield_1975–1985.svg.png' },
+                { id: 'augsburg', name: 'Augsburg', logo: 'imagens logo/imagens logo time/bundesliga/FC_Augsburg.png' },
+                { id: 'bayer_leverkusen', name: 'Bayer Leverkusen', logo: 'imagens logo/imagens logo time/bundesliga/Bayer_Leverkusen.png' },
+                { id: 'bayern', name: 'Bayern de Munique', logo: 'imagens logo/imagens logo time/bundesliga/FC_Bayern_München_logo_(2024).svg.png' },
+                { id: 'bochum', name: 'VfL Bochum', logo: 'imagens logo/imagens logo time/bundesliga/VfL-Bochum.png' },
+                { id: 'borussia_dortmund', name: 'Borussia Dortmund', logo: 'imagens logo/imagens logo time/bundesliga/Borussia_Dortmund_logo.svg.png' },
+                { id: 'borussia_monchengladbach', name: 'Borussia M.', logo: 'imagens logo/imagens logo time/bundesliga/Borussia_Mönchengladbach_logo.svg.png' },
+                { id: 'carl_zeiss', name: 'Carl Zeiss Jena', logo: 'imagens logo/imagens logo time/bundesliga/Logo_FC_Carl_Zeiss_Jena.svg.png' },
+                { id: 'eintracht', name: 'Eintracht Frankfurt', logo: 'imagens logo/imagens logo time/bundesliga/Eintracht_Frankfurt_crest.svg.png' },
+                { id: 'fc_koln', name: 'FC Köln', logo: 'imagens logo/imagens logo time/bundesliga/1._FC_Koeln_Logo_2014–.svg.png' },
+                { id: 'fortuna', name: 'Fortuna Düsseldorf', logo: 'imagens logo/imagens logo time/bundesliga/Fortuna_Düsseldorf.svg.png' },
+                { id: 'freiburg', name: 'SC Freiburg', logo: 'imagens logo/imagens logo time/bundesliga/SC_Freiburg_logo.svg.png' },
+                { id: 'greuther_furth', name: 'Greuther Fürth', logo: 'imagens logo/imagens logo time/bundesliga/SpVgg_Greuther_Fürth_logo_(2017).svg.png' },
+                { id: 'hamburger', name: 'Hamburger SV', logo: 'imagens logo/imagens logo time/bundesliga/hamburger sv.png' },
+                { id: 'hansa', name: 'Hansa Rostock', logo: 'imagens logo/imagens logo time/bundesliga/F.C._Hansa_Rostock_Logo.svg.png' },
+                { id: 'heidenheim', name: 'Heidenheim', logo: 'imagens logo/imagens logo time/bundesliga/1._FC_Heidenheim_1846.svg.png' },
+                { id: 'hertha', name: 'Hertha Berlin', logo: 'imagens logo/imagens logo time/bundesliga/Hertha_BSC_Logo_2012.svg.png' },
+                { id: 'hoffenheim', name: 'Hoffenheim', logo: 'imagens logo/imagens logo time/bundesliga/Logo_TSG_Hoffenheim.svg.png' },
+                { id: 'holstein', name: 'Holstein Kiel', logo: 'imagens logo/imagens logo time/bundesliga/Holstein_Kiel_Logo.svg.png' },
+                { id: 'mainz', name: 'Mainz 05', logo: 'imagens logo/imagens logo time/bundesliga/FSV_Mainz_05_Logo.png' },
+                { id: 'magdeburg', name: 'Magdeburg', logo: 'imagens logo/imagens logo time/bundesliga/1._FC_Magdeburg.svg.png' },
+                { id: 'nurnberg', name: 'Nürnberg', logo: 'imagens logo/imagens logo time/bundesliga/1._FC_Nürnberg_logo.svg.png' },
+                { id: 'rb_leipzig', name: 'RB Leipzig', logo: 'imagens logo/imagens logo time/bundesliga/RB_Leipzig_2020_Logo.png' },
+                { id: 'schalke', name: 'Schalke 04', logo: 'imagens logo/imagens logo time/bundesliga/FC_Schalke_04_Logo.svg.png' },
+                { id: 'st_pauli', name: 'St. Pauli', logo: 'imagens logo/imagens logo time/bundesliga/Fc_st_pauli_logo.svg.png' },
+                { id: 'stuttgart', name: 'Stuttgart', logo: 'imagens logo/imagens logo time/bundesliga/VfB_Stuttgart_1893_Logo.svg.png' },
+                { id: 'union_berlin', name: 'Union Berlin', logo: 'imagens logo/imagens logo time/bundesliga/1._FC_Union_Berlin_Logo.svg.png' },
+                { id: 'werder_bremen', name: 'Werder Bremen', logo: 'imagens logo/imagens logo time/bundesliga/SV-Werder-Bremen-Logo.svg.png' },
+                { id: 'wolfsburg', name: 'Wolfsburg', logo: 'imagens logo/imagens logo time/bundesliga/Logo-VfL-Wolfsburg.svg.png' }
+            ],
+            ligue_1: [
+                { id: 'angers', name: 'Angers', logo: 'imagens logo/imagens logo time/ligue 1/Angers_Sporting_Club_de_l\'Ouest_logo.svg.png' },
+                { id: 'auxerre', name: 'Auxerre', logo: 'imagens logo/imagens logo time/ligue 1/AJ_Auxerre.png' },
+                { id: 'bordeaux', name: 'Bordeaux', logo: 'imagens logo/imagens logo time/ligue 1/FC_Girondins_de_Bordeaux_logo.svg.png' },
+                { id: 'brest', name: 'Brest', logo: 'imagens logo/imagens logo time/ligue 1/brest_logo.png' },
+                { id: 'lens', name: 'Lens', logo: 'imagens logo/imagens logo time/ligue 1/RC_Lens.png' },
+                { id: 'lille', name: 'Lille', logo: 'imagens logo/imagens logo time/ligue 1/Lille_osc.png' },
+                { id: 'lyon', name: 'Lyon', logo: 'imagens logo/imagens logo time/ligue 1/Olympique_lyonnais.png' },
+                { id: 'monaco', name: 'Monaco', logo: 'imagens logo/imagens logo time/ligue 1/LogoASMonacoFC2021.svg.png' },
+                { id: 'nantes', name: 'Nantes', logo: 'imagens logo/imagens logo time/ligue 1/Nantes.png' },
+                { id: 'nice', name: 'OGC Nice', logo: 'imagens logo/imagens logo time/ligue 1/OGC_Nice_logo.svg.png' },
+                { id: 'om', name: 'Olympique de Marseille', logo: 'imagens logo/imagens logo time/ligue 1/Olympique_Marseille_logo.svg.png' },
+                { id: 'paris_fc', name: 'Paris FC', logo: 'imagens logo/imagens logo time/ligue 1/Paris Fc.png' },
+                { id: 'psg', name: 'PSG', logo: 'imagens logo/imagens logo time/ligue 1/Paris_Saint-Germain_F.C..svg.png' },
+                { id: 'rennes', name: 'Rennes', logo: 'imagens logo/imagens logo time/ligue 1/Stade_Rennais_FC.svg.png' },
+                { id: 'saint_etienne', name: 'Saint-Étienne', logo: 'imagens logo/imagens logo time/ligue 1/Logo_AS_Saint-Étienne.svg.png' },
+                { id: 'strasbourg', name: 'Strasbourg', logo: 'imagens logo/imagens logo time/ligue 1/Racing_Club_de_Strasbourg_logo.svg.png' },
+                { id: 'toulouse', name: 'Toulouse', logo: 'imagens logo/imagens logo time/ligue 1/Toulouse_FC.png' },
+                { id: 'versailles', name: 'Versailles', logo: 'imagens logo/imagens logo time/ligue 1/Logo_FC_Versailles_-_2022.svg.png' }
+            ]
+        };
+
+        const PRODUCTS = [
+            { id: 'p1', teamId: 'rma', name: 'Real Madrid Home 24/25', price: '349,90', cat: 'Performance', img1: 'https://images.unsplash.com/photo-1551489186-cf8726f514f8?w=600', img2: 'https://images.unsplash.com/photo-1579952363873-27f3bade9f55?w=600', gallery: ['https://images.unsplash.com/photo-1551489186-cf8726f514f8?w=1000', 'https://images.unsplash.com/photo-1579952363873-27f3bade9f55?w=1000', 'https://images.unsplash.com/photo-1560272564-c83b66b1ad12?w=1000', 'https://images.unsplash.com/photo-1614632537197-38a17061c2bd?w=1000'] },
+            { id: 'p2', teamId: 'city', name: 'Man City Away 24/25', price: '349,90', cat: 'Torcedor', img1: 'https://images.unsplash.com/photo-1560272564-c83b66b1ad12?w=600', img2: null, gallery: ['https://images.unsplash.com/photo-1560272564-c83b66b1ad12?w=1000', 'https://images.unsplash.com/photo-1551489186-cf8726f514f8?w=1000', 'https://images.unsplash.com/photo-1579952363873-27f3bade9f55?w=1000'] },
+            { id: 'p3', teamId: 'ars', name: 'Arsenal Home 24/25', price: '399,90', cat: 'Performance', img1: 'https://images.unsplash.com/photo-1551479460-5e76c686816a?w=600', img2: 'https://images.unsplash.com/photo-1579952363873-27f3bade9f55?w=600', gallery: ['https://images.unsplash.com/photo-1551479460-5e76c686816a?w=1000', 'https://images.unsplash.com/photo-1579952363873-27f3bade9f55?w=1000', 'https://images.unsplash.com/photo-1614632537197-38a17061c2bd?w=1000'] },
+            { id: 'p4', teamId: 'sao', name: 'São Paulo Home 2024', price: '299,90', cat: 'Futebol', img1: 'https://images.unsplash.com/photo-1614632537197-38a17061c2bd?w=600', img2: null, gallery: ['https://images.unsplash.com/photo-1614632537197-38a17061c2bd?w=1000', 'https://images.unsplash.com/photo-1551489186-cf8726f514f8?w=1000'] },
+            { id: 'p5', teamId: 'fla', name: 'Flamengo Away 2024', price: '299,90', cat: 'Torcedor', img1: 'https://images.unsplash.com/photo-1551479460-5e76c686816a?w=600', img2: null, gallery: ['https://images.unsplash.com/photo-1551479460-5e76c686816a?w=1000', 'https://images.unsplash.com/photo-1560272564-c83b66b1ad12?w=1000'] },
+            { id: 'p6', teamId: 'bar', name: 'Barcelona Home 23/24', price: '349,90', cat: 'Performance', img1: 'https://images.unsplash.com/photo-1579952363873-27f3bade9f55?w=600', img2: null, gallery: ['https://images.unsplash.com/photo-1579952363873-27f3bade9f55?w=1000', 'https://images.unsplash.com/photo-1551489186-cf8726f514f8?w=1000', 'https://images.unsplash.com/photo-1614632537197-38a17061c2bd?w=1000'] },
+        ];
+
+        // ESTADO GLOBAL
+        let currentLeague = 'premier';
+        let currentTeam = null;
+
+        // RENDERIZA PRODUTO (Estilo Adidas: Fundo cinza, sem borda, preço no topo)
+        function renderProductCard(product) {
+            return `
+                <div class="product-card cursor-pointer" onclick="openProductDetail('${product.id}')">
+                    <div class="img-container mb-3">
+                        <img src="${product.img1}" class="main-img" alt="${product.name}">
+                        ${product.img2 ? `<img src="${product.img2}" class="hover-img" alt="Outro angulo">` : ''}
+                        <button class="fav-btn" onclick="toggleFav(this)">
+                            <i data-lucide="heart" size="20"></i>
+                        </button>
+                    </div>
+                    <div class="flex flex-col">
+                        <span class="font-bold text-sm mb-1">R$ ${product.price}</span>
+                        <h3 class="text-sm font-medium truncate">${product.name}</h3>
+                        <span class="text-xs text-gray-500 mt-1">${product.cat}</span>
+                    </div>
+                </div>
+            `;
+        }
+
+        function openProductDetail(id) {
+            const p = PRODUCTS.find(x => x.id === id);
+            if (p) {
+                document.getElementById('detail-img').src = p.img1;
+                document.getElementById('detail-name').innerText = p.name;
+                
+                // Renderizar Galeria (ângulos)
+                const galleryContainer = document.getElementById('detail-gallery');
+                if (p.gallery && p.gallery.length > 0) {
+                    galleryContainer.innerHTML = p.gallery.map((img) => `
+                        <button onclick="changeDetailImage('${img}')" class="flex-none w-20 h-24 bg-[#f5f5f5] border-2 border-transparent focus:border-black hover:border-gray-300 transition-all overflow-hidden rounded-md">
+                            <img src="${img}" class="w-full h-full object-cover">
+                        </button>
+                    `).join('');
+                } else {
+                    galleryContainer.innerHTML = '';
+                }
+            }
             showPage('product');
         }
 
-        // PAYMENT TOGGLE LOGIC
-        function setPay(method) {
-            const btns = ['pix', 'card', 'boleto'];
-            btns.forEach(m => {
-                const b = document.getElementById('pay-' + m);
-                b.classList.remove('border-red-600', 'bg-red-50', 'text-red-600');
-                b.classList.add('border-black/5', 'text-black/20');
-            });
-            const active = document.getElementById('pay-' + method);
-            active.classList.add('border-red-600', 'bg-red-50', 'text-red-600');
-            active.classList.remove('border-black/5', 'text-black/20');
+        function changeDetailImage(src) {
+            document.getElementById('detail-img').src = src;
         }
+
+        // RENDERIZA INTERFACE
+        function updateUI() {
+            // 1. Ligas
+            const leagueHtml = LEAGUES.map(l => `
+                <button onclick="selectLeague('${l.id}')" class="flex-none flex items-center gap-2 px-5 py-2 rounded-full border transition-all text-sm font-bold ${currentLeague === l.id ? 'border-black bg-black text-white' : 'border-gray-200 text-gray-600 hover:border-gray-400'}">
+                    <img src="${l.logo}" class="w-5 h-5 object-contain bg-white rounded-full p-[2px]">
+                    ${l.name}
+                </button>
+            `).join('');
+            document.getElementById('league-tabs').innerHTML = leagueHtml;
+
+            // 2. Times da Liga
+            const tCarousel = document.getElementById('teams-carousel');
+            tCarousel.style.opacity = '0';
+
+            setTimeout(() => {
+                const teams = TEAMS[currentLeague] || [];
+                tCarousel.innerHTML = teams.map(t => `
+                    <button onclick="selectTeam('${t.id}')" class="flex-none flex flex-col items-center gap-2 w-20 group">
+                        <div class="w-16 h-16 rounded-full border bg-white flex items-center justify-center p-3 transition-all ${currentTeam === t.id ? 'border-black shadow-md scale-110' : 'border-gray-200 group-hover:border-gray-400'}">
+                            <img src="${t.logo}" class="max-w-full max-h-full object-contain">
+                        </div>
+                        <span class="text-[10px] font-bold text-center uppercase tracking-wide ${currentTeam === t.id ? 'text-black' : 'text-gray-500'}">${t.name}</span>
+                    </button>
+                `).join('');
+                tCarousel.style.opacity = '1';
+            }, 150);
+
+            // 3. Produtos Filtrados
+            let filtered = [];
+            if (currentTeam) {
+                filtered = PRODUCTS.filter(p => p.teamId === currentTeam);
+                document.getElementById('products-title').innerText = `Camisas: ${TEAMS[currentLeague].find(t => t.id === currentTeam).name}`;
+            } else {
+                const leagueTeamIds = TEAMS[currentLeague].map(t => t.id);
+                filtered = PRODUCTS.filter(p => leagueTeamIds.includes(p.teamId));
+                document.getElementById('products-title').innerText = `Todos de ${LEAGUES.find(l => l.id === currentLeague).name}`;
+            }
+
+            const grid = document.getElementById('products-grid');
+            const msg = document.getElementById('no-products-msg');
+
+            if (filtered.length > 0) {
+                grid.innerHTML = filtered.map(renderProductCard).join('');
+                grid.classList.remove('hidden');
+                msg.classList.add('hidden');
+            } else {
+                grid.classList.add('hidden');
+                msg.classList.remove('hidden');
+            }
+
+            // Atualiza os ícones do Lucide nos novos elementos
+            lucide.createIcons();
+        }
+
+        // Ações
+        function selectLeague(id) {
+            currentLeague = id;
+            currentTeam = null; // Reseta o time
+            updateUI();
+        }
+
+        function selectTeam(id) {
+            // Se clicar no mesmo, desseleciona
+            currentTeam = currentTeam === id ? null : id;
+            updateUI();
+        }
+
+        // Inicializar
+        updateUI();
+
+        // Povoar o Catálogo Geral (só pra mostrar volume)
+        document.getElementById('catalog-grid').innerHTML = PRODUCTS.map(renderProductCard).join('');
+        lucide.createIcons();
+
     </script>
 </body>
+
 </html>
